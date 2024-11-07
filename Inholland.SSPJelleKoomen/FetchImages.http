@@ -1,0 +1,2 @@
+﻿### Fetch images for a specific job
+GET http://localhost:7071/api/fetch-images/{jobId}

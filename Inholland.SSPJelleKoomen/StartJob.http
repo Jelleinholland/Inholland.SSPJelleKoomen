@@ -1,0 +1,7 @@
+﻿### Start a new job
+POST http://localhost:7071/api/startjob
+Content-Type: application/json
+
+{
+  "exampleKey": "exampleValue"
+}

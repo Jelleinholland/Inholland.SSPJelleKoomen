@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Inholland.SSPJelleKoomen": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7030",
+      "launchBrowser": false
+    }
+  }
+}
