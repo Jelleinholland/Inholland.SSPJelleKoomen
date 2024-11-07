@@ -32,3 +32,11 @@ resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
     }
   }
 }
+
+resource startJobQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2021-04-01' = {
+  name: '${storageAccount.name}/default/start-job-queue'
+}
+
+resource imageProcessingQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2021-04-01' = {
+  name: '${storageAccount.name}/default/image-processing-queue'
+}
