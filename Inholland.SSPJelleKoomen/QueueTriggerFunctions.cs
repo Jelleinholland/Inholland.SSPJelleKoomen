@@ -76,7 +76,7 @@ public static class QueueTriggerFunctions
         var jsonObject = JObject.Parse(jsonResponse);
         var imageUrl = jsonObject["urls"]?["full"]?.ToString();
         log.LogInformation($"Fetching image from URL: {imageUrl}");
-
+        
         try
         {
             var response = await httpClient.GetAsync(imageUrl);
@@ -103,6 +103,7 @@ public static class QueueTriggerFunctions
         log.LogInformation("ProcessImageQueue function completed.");
     }
 }
+
 
 public class QueueMessage
 {

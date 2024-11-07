@@ -14,6 +14,17 @@ namespace Inholland.SSPJelleKoomen;
 
 public static class HttpTriggerFunctions
 {
+    private static bool IsAuthorized(HttpRequest req)
+    {
+        var apiKey = Environment.GetEnvironmentVariable("ApiKey");
+        if (!req.Headers.TryGetValue("x-api-key", out var extractedApiKey))
+        {
+            return false;
+        }
+
+        return apiKey == extractedApiKey;
+    }
+
     [FunctionName("StartJob")]
     public static async Task<IActionResult> StartJob(
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
@@ -21,6 +32,11 @@ public static class HttpTriggerFunctions
         ILogger log)
     {
         log.LogInformation("StartJob function processed a request.");
+
+        if (!IsAuthorized(req))
+        {
+            return new UnauthorizedResult();
+        }
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
         dynamic data = JsonConvert.DeserializeObject(requestBody);
@@ -39,6 +55,11 @@ public static class HttpTriggerFunctions
     {
         log.LogInformation($"Fetching images for JobId: {jobId}");
 
+        if (!IsAuthorized(req))
+        {
+            return new UnauthorizedResult();
+        }
+
         var blobServiceClient = new BlobServiceClient(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
         var containerClient = blobServiceClient.GetBlobContainerClient("images");
         var blobs = containerClient.GetBlobsAsync(prefix: jobId);
@@ -48,6 +69,7 @@ public static class HttpTriggerFunctions
         {
             var blobClient = containerClient.GetBlobClient(blob.Name);
             var imageUrl = blobClient.Uri.ToString();
+
             log.LogInformation($"Found image: {imageUrl}");
             imageUrls.Add(imageUrl);
         }
