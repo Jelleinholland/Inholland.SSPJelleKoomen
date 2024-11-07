@@ -36,19 +36,22 @@ public static class QueueTriggerFunctions
 
         log.LogInformation($"Retrieved {weatherStations.Count} weather stations.");
 
-        // Limit to one weather station for testing purposes
-        var station = weatherStations.First();
-        var message = new QueueMessage
+        var tasks = weatherStations.Select(async station =>
         {
-            JobId = jobId,
-            StationId = station.StationId,
-            StationName = station.StationName,
-            Temperature = station.Temperature,
-            WindSpeed = station.WindSpeed,
-            WeatherDescription = station.WeatherDescription
-        };
+            var message = new QueueMessage
+            {
+                JobId = jobId,
+                StationId = station.StationId,
+                StationName = station.StationName,
+                Temperature = station.Temperature,
+                WindSpeed = station.WindSpeed,
+                WeatherDescription = station.WeatherDescription
+            };
 
-        await imageQueueCollector.AddAsync(JsonConvert.SerializeObject(message));
+            await imageQueueCollector.AddAsync(JsonConvert.SerializeObject(message));
+        });
+
+        await Task.WhenAll(tasks);
         
 
         log.LogInformation("ProcessJobQueue function completed.");

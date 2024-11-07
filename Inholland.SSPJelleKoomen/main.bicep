@@ -40,3 +40,16 @@ resource startJobQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2
 resource imageProcessingQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2021-04-01' = {
   name: '${storageAccount.name}/default/image-processing-queue'
 }
+
+// Blob Container Resource
+resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = {
+  name: '${storageAccount.name}/default/${blobContainerName}'
+}
+
+// Table Storage Resource
+resource tableStorage 'Microsoft.Storage/storageAccounts/tableServices/tables@2021-04-01' = {
+  name: '${storageAccount.name}/default/${tableName}'
+}
+
+param blobContainerName string = 'weather-images'
+param tableName string = 'WeatherJobTable'
